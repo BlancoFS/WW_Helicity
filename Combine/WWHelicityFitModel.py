@@ -113,7 +113,7 @@ class WWHelicityModel( WWHelicityFitModel):
             self.modelBuilder.factory_("expr::r_FLT(\"(@0/%s)\",FLT_Fit)" % (self.FLT_MC))
             self.modelBuilder.factory_("expr::r_FTL(\"(@0/%s)\",FTL_Fit)" % (self.FTL_MC))
 
-            self.modelBuilder.doSet("POI","FLL_Fit,FTT_Fit,FTL_Fit, FLT_Fit")
+            self.modelBuilder.doSet("POI","FLL_Fit,FTT_Fit,FTL_Fit,FLT_Fit")
 
         if self.ModCase=='MCFractionswK':
             # Does it make sense (@0+@1+@2)/(@3+@4+@5) instead of @0/@3 + @1/@4 + @2/@5
