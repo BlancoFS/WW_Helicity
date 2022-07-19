@@ -5,7 +5,7 @@ import re
 ##-------------------------------------
 ##-------------------------------------
 
-class WWFitModel(PhysicsModel):
+class WWHelicityFitModel(PhysicsModel):
     def __init__(self):
         PhysicsModel.__init__(self)
         # -- Variables definition
@@ -75,9 +75,9 @@ class WWFitModel(PhysicsModel):
 ##-------------------------------------
 ##-------------------------------------
 
-class WWHelicityModel( WWFitModel):
+class WWHelicityModel( WWHelicityFitModel):
     def __init__(self):
-         WWFitModel.__init__(self)
+         WWHelicityFitModel.__init__(self)
 
     def setPhysicsOptions(self,physOptions):
         self.setPhysicsOptionsBase(physOptions)
