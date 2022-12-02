@@ -34,23 +34,23 @@
 
 
 /**
-###################################################
-##                                               ##
-### COMPUTE POLARIZED FRACTIONS FOR WW ANALYSIS ### 
-##                                               ##
-###################################################
+######################################################
+##                                                  ##
+### COMPUTE POLARIZED WEIGHTS FOR H -> WW ANALYSIS ### 
+##                                                  ##
+######################################################
 **/
 
-class DoPolarizationWeight : public multidraw::TTreeFunction {
+class DoHiggsPolarizationWeight : public multidraw::TTreeFunction {
 public:
   //Class Constructor 
-  DoPolarizationWeight(char const* name);
+  DoHiggsPolarizationWeight(char const* name);
   //Class Destructor 
-  ~DoPolarizationWeight() {
+  ~DoHiggsPolarizationWeight() {
   }
   //Functions from Multidraw namespace (TTreeFunction class)
-  char const* getName() const override {return "DoPolarizationWeight"; }
-  TTreeFunction* clone() const override {return new DoPolarizationWeight(name_.c_str());}
+  char const* getName() const override {return "DoHiggsPolarizationWeight"; }
+  TTreeFunction* clone() const override {return new DoHiggsPolarizationWeight(name_.c_str());}
   unsigned getNdata() override {return 1; }
   //This function will return the required value
   double evaluate(unsigned) override;
@@ -73,14 +73,14 @@ private:
   
 };
 
-DoPolarizationWeight::DoPolarizationWeight(char const* name):
+DoHiggsPolarizationWeight::DoHiggsPolarizationWeight(char const* name):
   TTreeFunction()
 {
   name_ = name;
 }
 
 double
-DoPolarizationWeight::evaluate(unsigned)
+DoHiggsPolarizationWeight::evaluate(unsigned)
 {
    
   ROOT::Math::PtEtaPhiEVector genWp;
@@ -120,6 +120,8 @@ DoPolarizationWeight::evaluate(unsigned)
     
   for (unsigned int p = 0; p < nGen; p++){
   
+    // Leptons
+    
     mother_pos = GenPart_genPartIdxMother->At(p);
     //if (GenPart_pdgId->At(p)==11 && GenPart_status->At(p)==1 && GenPart_pdgId->At(mother_pos)==-24){
     if (GenPart_pdgId->At(p)==11 && GenPart_pdgId->At(mother_pos)==-24 && GenPart_pdgId->At(GenPart_genPartIdxMother->At(mother_pos))!=15){
@@ -237,7 +239,6 @@ DoPolarizationWeight::evaluate(unsigned)
   H = WP + WM;
   
   genH.SetCoordinates(H.Pt(), H.Eta(), H.Phi(), H.E());
-
   
   ROOT::Math::XYZVector hRF;  
   hRF = henH.BoostToCM();
@@ -271,7 +272,6 @@ DoPolarizationWeight::evaluate(unsigned)
   Double_t P1 = ( (2 * ghWW * WP.M() * WP.M()) / ((WP.M() * WP.M() - MW*MW)*(WP.M() * WP.M() - MW * MW) + WW * WW * MW * MW));
   Double_t P2 = ( (2 * ghWW * WM.M() * WM.M()) / ((WM.M() * WM.M() - MW*MW)*(WM.M() * WM.M() - MW * MW) + WW * WW * MW * MW));
   Double_t ALL2 = 4 * K*K * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * ROOT::Math::sin(theta_Wp_star)*ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star)*ROOT::Math::sin(theta_Wm_star);
-  
   
   /////////////////////////////////////
   //             |A++|^2             //
@@ -320,49 +320,27 @@ DoPolarizationWeight::evaluate(unsigned)
   
   Double_t ATT2 = App2 + Amm2 + 2ReAppmm;
   
+  
+  // Final weights
+  
   Double_t weight_LL = ALL2 / (ALL2 + ATT2 + 2ReALLpp + 2ReALLmm);
   
+  Double_t weight_TT = ATT2 / (ALL2 + ATT2 + 2ReALLpp + 2ReALLmm);
   
-  
-  
-  
-  
-  
-
-  
-
   if (name_=="LL"){
     return (double)weight_LL;
-  }else if (name_=="TL"){
-    return (double)weight_TL;
-  }else if (name_=="LT"){
-    return (double)weight_LT;
-  }else if (name_=="TT"){
+  }else if(name_="TT"){
     return (double)weight_TT;
-  }else if (name_=="cos_wp"){
-    return (double)cos_Wp_theta_star;
-  }else if (name_=="cos_wm"){
-    return (double)cos_Wm_theta_star;
-  }else if (name_=="f0_p"){
-    return (double)weight_f0_Wp;
-  }else if (name_=="fL_p"){
-    return (double)weight_fL_Wp;
-  }else if (name_=="fR_p"){
-    return (double)weight_fR_Wp;
-  }else if (name_=="f0_m"){
-    return (double)weight_f0_Wm;
-  }else if (name_=="fL_m"){
-    return (double)weight_fL_Wm;
-  }else if (name_=="fR_m"){
-    return (double)weight_fR_Wm;
   }else{
-    return -999;
+    return -9999.9;
   }
+  
+
     
 }  
   
 void
-DoPolarizationWeight::bindTree_(multidraw::FunctionLibrary& _library)
+DoHiggsPolarizationWeight::bindTree_(multidraw::FunctionLibrary& _library)
 {
   //GenPart
   _library.bindBranch(GenPart_eta, "GenPart_eta");
