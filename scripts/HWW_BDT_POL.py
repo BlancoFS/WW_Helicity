@@ -4,7 +4,7 @@ import numpy as np
 from PhysicsTools.NanoAODTools.postprocessing.framework.datamodel import Collection 
 from PhysicsTools.NanoAODTools.postprocessing.framework.eventloop import Module
 
-class HWW_VBF_DNN(Module):
+class HWW_BDT_POL(Module):
   
     def __init__(self, sample):
         print '####################', sample
