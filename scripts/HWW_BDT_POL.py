@@ -217,16 +217,16 @@ class HWW_BDT_POL(Module):
         K = ((H.M()*H.M() - WP.M()*WP.M() - WM.M()*WM.M()) / (2 * WP.M() * WM.M()))
         P1 = ( (2 * ghWW * WP.M() * WP.M()) / ((WP.M() * WP.M() - MW*MW)*(WP.M() * WP.M() - MW * MW) + WW * WW * MW * MW))
         P2 = ( (2 * ghWW * WM.M() * WM.M()) / ((WM.M() * WM.M() - MW*MW)*(WM.M() * WM.M() - MW * MW) + WW * WW * MW * MW))
-        ALL2 = 4 * K*K * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * ROOT.Math.sin(theta_Wp_star)*ROOT.Math.sin(theta_Wp_star) * ROOT.Math.sin(theta_Wm_star)*ROOT.Math.sin(theta_Wm_star)
+        ALL2 = 4 * K*K * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * np.sin(theta_Wp_star)*np.sin(theta_Wp_star) * np.sin(theta_Wm_star)*np.sin(theta_Wm_star)
         
         #/////////////////////////////////////
         #//             |A++|^2             //
         #/////////////////////////////////////
         
-        plus1 = cL*cL*cL*cL * (1 + ROOT.Math.cos(theta_Wp_star))*(1 + ROOT.Math.cos(theta_Wp_star)) * (1 + ROOT.Math.cos(theta_Wm_star))*(1 + ROOT.Math.cos(theta_Wm_star))
-        plus2 = cR*cR*cR*cR * (1 - ROOT.Math.cos(theta_Wp_star))*(1 - ROOT.Math.cos(theta_Wp_star)) * (1 - ROOT.Math.cos(theta_Wm_star))*(1 - ROOT.Math.cos(theta_Wm_star))
-        plus3 = cR*cR*cL*cL * (1 + ROOT.Math.cos(theta_Wp_star))*(1 + ROOT.Math.cos(theta_Wp_star)) * (1 - ROOT.Math.cos(theta_Wm_star))*(1 - ROOT.Math.cos(theta_Wm_star))
-        plus4 = cR*cR*cL*cL * (1 - ROOT.Math.cos(theta_Wp_star))*(1 - ROOT.Math.cos(theta_Wp_star)) * (1 + ROOT.Math.cos(theta_Wm_star))*(1 + ROOT.Math.cos(theta_Wm_star))
+        plus1 = cL*cL*cL*cL * (1 + np.cos(theta_Wp_star))*(1 + np.cos(theta_Wp_star)) * (1 + np.cos(theta_Wm_star))*(1 + np.cos(theta_Wm_star))
+        plus2 = cR*cR*cR*cR * (1 - np.cos(theta_Wp_star))*(1 - np.cos(theta_Wp_star)) * (1 - np.cos(theta_Wm_star))*(1 - np.cos(theta_Wm_star))
+        plus3 = cR*cR*cL*cL * (1 + np.cos(theta_Wp_star))*(1 + np.cos(theta_Wp_star)) * (1 - np.cos(theta_Wm_star))*(1 - np.cos(theta_Wm_star))
+        plus4 = cR*cR*cL*cL * (1 - np.cos(theta_Wp_star))*(1 - np.cos(theta_Wp_star)) * (1 + np.cos(theta_Wm_star))*(1 + np.cos(theta_Wm_star))
         
         App2 = P1 * P2 * (plus1 + plus2 + plus3 + plus4);
         
@@ -234,10 +234,10 @@ class HWW_BDT_POL(Module):
         #//             |A--|^2             //
         #/////////////////////////////////////
         
-        minus1 = cL*cL*cL*cL * (1 - ROOT.Math.cos(theta_Wp_star))*(1 - ROOT.Math.cos(theta_Wp_star)) * (1 - ROOT.Math.cos(theta_Wm_star))*(1 - ROOT.Math.cos(theta_Wm_star))
-        minus2 = cR*cR*cR*cR * (1 + ROOT.Math.cos(theta_Wp_star))*(1 + ROOT.Math.cos(theta_Wp_star)) * (1 + ROOT.Math.cos(theta_Wm_star))*(1 + ROOT.Math.cos(theta_Wm_star))
-        minus3 = cR*cR*cL*cL * (1 + ROOT.Math.cos(theta_Wp_star))*(1 + ROOT.Math.cos(theta_Wp_star)) * (1 - ROOT.Math.cos(theta_Wm_star))*(1 - ROOT.Math.cos(theta_Wm_star))
-        minus4 = cR*cR*cL*cL * (1 - ROOT.Math.cos(theta_Wp_star))*(1 - ROOT.Math.cos(theta_Wp_star)) * (1 + ROOT.Math.cos(theta_Wm_star))*(1 + ROOT.Math.cos(theta_Wm_star))
+        minus1 = cL*cL*cL*cL * (1 - np.cos(theta_Wp_star))*(1 - np.cos(theta_Wp_star)) * (1 - np.cos(theta_Wm_star))*(1 - np.cos(theta_Wm_star))
+        minus2 = cR*cR*cR*cR * (1 + np.cos(theta_Wp_star))*(1 + np.cos(theta_Wp_star)) * (1 + np.cos(theta_Wm_star))*(1 + np.cos(theta_Wm_star))
+        minus3 = cR*cR*cL*cL * (1 + np.cos(theta_Wp_star))*(1 + np.cos(theta_Wp_star)) * (1 - np.cos(theta_Wm_star))*(1 - np.cos(theta_Wm_star))
+        minus4 = cR*cR*cL*cL * (1 - np.cos(theta_Wp_star))*(1 - np.cos(theta_Wp_star)) * (1 + np.cos(theta_Wm_star))*(1 + np.cos(theta_Wm_star))
         
         Amm2 = P1 * P2 * (minus1 + minus2 + minus3 + minus4)
         
@@ -245,19 +245,19 @@ class HWW_BDT_POL(Module):
         #//            2Re(ALL++)           //
         #/////////////////////////////////////
         
-        ReALLpp = -4 * K * P1 * P2 * (plus1 + plus2 - plus3 - plus4) * ROOT.Math.sin(theta_Wp_star) * ROOT.Math.sin(theta_Wm_star) * ROOT.Math.cos(dphill)
+        ReALLpp = -4 * K * P1 * P2 * (plus1 + plus2 - plus3 - plus4) * np.sin(theta_Wp_star) * np.sin(theta_Wm_star) * np.cos(dphill)
         
         #/////////////////////////////////////
         #//            2Re(ALL--)           //
         #/////////////////////////////////////
         
-        ReALLmm = -4 * K * P1 * P2 * (minus1 + minus2 - minus3 - minus4) * ROOT.Math.sin(theta_Wp_star) * ROOT.Math.sin(theta_Wm_star) * ROOT.Math.cos(dphill)
+        ReALLmm = -4 * K * P1 * P2 * (minus1 + minus2 - minus3 - minus4) * np.sin(theta_Wp_star) * np.sin(theta_Wm_star) * np.cos(dphill)
       
         #/////////////////////////////////////
         #//            2Re(A++--)           //
         #/////////////////////////////////////
         
-        ReAppmm = 2 * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * ROOT.Math.sin(theta_Wp_star)*ROOT.Math.sin(theta_Wp_star) * ROOT.Math.sin(theta_Wm_star)*ROOT.Math.sin(theta_Wm_star) * ROOT.Math.cos(2*dphill)
+        ReAppmm = 2 * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * np.sin(theta_Wp_star)*np.sin(theta_Wp_star) * np.sin(theta_Wm_star)*np.sin(theta_Wm_star) * np.cos(2*dphill)
         
         
         #/////////////////////////////////////
