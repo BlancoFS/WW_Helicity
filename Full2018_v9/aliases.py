@@ -284,6 +284,21 @@ for thu in thus:
     }
     
     
+aliases['dycr'] = {
+    'expr': 'mth<60 && mll>40 && mll<80 && bVeto'
+}
+
+aliases['wwcr'] = {
+    'expr': 'mth>60 && mtw2>30 && mll>100 && bVeto'
+}
+
+# SR definition
+
+aliases['sr'] = {
+    'expr': 'mtw2>30 && bVeto'
+}
+    
+    
 aliases['Phi'] = {
     'linesToAdd' : ['.L %s/WW/UL/RW_ME/dphi.cc+' % configurations ],
     'class' : 'Deltaphi'
