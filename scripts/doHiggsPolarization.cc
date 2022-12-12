@@ -110,7 +110,7 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   //Double_t cR = GF*MW*MW*MW/(6.0 * ROOT::Math::Pi()*ROOT::Math::sqrt(2));
  
   Double_t cL = 0.0;
-  Double_t cR = 1.0;
+  Double_t cR = GF*MW*MW*MW/(6.0 * ROOT::Math::Pi()*ROOT::Math::sqrt(2));
  
     
   Int_t number_elec = 0;
