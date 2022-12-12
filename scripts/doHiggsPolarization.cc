@@ -105,8 +105,13 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   Double_t WW = 2.047600e+00;
   Double_t ghWW = 2*MW*MW/246;
   Double_t GF = ROOT::Math::sqrt(2)/(2*246*246);
-  Double_t cL = GF*MW*MW*MW/(6.0 * ROOT::Math::Pi()*ROOT::Math::sqrt(2));
-  Double_t cR = GF*MW*MW*MW/(6.0 * ROOT::Math::Pi()*ROOT::Math::sqrt(2));
+  
+  //Double_t cL = GF*MW*MW*MW/(6.0 * ROOT::Math::Pi()*ROOT::Math::sqrt(2));
+  //Double_t cR = GF*MW*MW*MW/(6.0 * ROOT::Math::Pi()*ROOT::Math::sqrt(2));
+ 
+  Double_t cL = 0.0;
+  Double_t cR = 1.0;
+ 
     
   Int_t number_elec = 0;
   Int_t number_muon = 0;
@@ -242,10 +247,10 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   genH.SetCoordinates(H.Pt(), H.Eta(), H.Phi(), H.E());
   
   ROOT::Math::XYZVector hRF;  
-  hRF = henH.BoostToCM();
+  hRF = genH.BoostToCM();
   
   ROOT::Math::XYZVector leppWRF;
-  ROOT::Math::XYZVector lepmWRF;
+  ROOT::Math::XYZVector nupWRF;
   
   ROOT::Math::XYZVector WpHRF;
   ROOT::Math::XYZVector WmHRF;
@@ -300,37 +305,37 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   //            2Re(ALL++)           //
   /////////////////////////////////////
   
-  Double_t 2ReALLpp = -4 * K * P1 * P2 * (plus1 + plus2 - plus3 - plus4) * ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star) * ROOT::Math::cos(dphill);
+  Double_t ReALLpp = -4 * K * P1 * P2 * (plus1 + plus2 - plus3 - plus4) * ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star) * ROOT::Math::cos(dphill);
   
   /////////////////////////////////////
   //            2Re(ALL--)           //
   /////////////////////////////////////
   
-  Double_t 2ReALLmm = -4 * K * P1 * P2 * (minus1 + minus2 - minus3 - minus4) * ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star) * ROOT::Math::cos(dphill);
+  Double_t ReALLmm = -4 * K * P1 * P2 * (minus1 + minus2 - minus3 - minus4) * ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star) * ROOT::Math::cos(dphill);
 
   /////////////////////////////////////
   //            2Re(A++--)           //
   /////////////////////////////////////
   
-  Double_t 2ReAppmm = 2 * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * ROOT::Math::sin(theta_Wp_star)*ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star)*ROOT::Math::sin(theta_Wm_star) * ROOT::Math::cos(2*dphill);
+  Double_t ReAppmm = 2 * P1 * P2 * (cL*cL + cR*cR)*(cL*cL + cR*cR) * ROOT::Math::sin(theta_Wp_star)*ROOT::Math::sin(theta_Wp_star) * ROOT::Math::sin(theta_Wm_star)*ROOT::Math::sin(theta_Wm_star) * ROOT::Math::cos(2*dphill);
   
   
   /////////////////////////////////////
   //             |ATT|^2             //
   /////////////////////////////////////
   
-  Double_t ATT2 = App2 + Amm2 + 2ReAppmm;
+  Double_t ATT2 = App2 + Amm2 + ReAppmm;
   
   
   // Final weights
   
-  Double_t weight_LL = ALL2 / (ALL2 + ATT2 + 2ReALLpp + 2ReALLmm);
+  Double_t weight_LL = ALL2 / (ALL2 + ATT2 + ReALLpp + ReALLmm);
   
-  Double_t weight_TT = ATT2 / (ALL2 + ATT2 + 2ReALLpp + 2ReALLmm);
+  Double_t weight_TT = ATT2 / (ALL2 + ATT2 + ReALLpp + ReALLmm);
   
   if (name_=="LL"){
     return (double)weight_LL;
-  }else if(name_="TT"){
+  }else if(name_=="TT"){
     return (double)weight_TT;
   }else{
     return -9999.9;
