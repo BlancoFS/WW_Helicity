@@ -114,11 +114,20 @@ TLorentzVector boostinv(TLorentzVector q, TLorentzVector pboost){
 }
 
 
+/////////////////////////////////////                                                                                                                                                                                                                                         
+//             |ALL|^2             //                                                                                                                                                                                                                                         
+/////////////////////////////////////
+
 Double_t distTheta00(Double_t costheta, Double_t costheta1){
 
   Double_t distTheta00_ = 16.0*(cR*cR*cR*cR + 2*cL*cL*cR*cR + cL*cL*cL*cL)*(1.0 - costheta*costheta)*(1.0 - costheta1*costheta1);
   return distTheta00_;  
 }
+
+
+/////////////////////////////////////                                                                                                                                                                                                                                         
+//             |A++|^2             //                                                                                                                                                                                                                                         
+///////////////////////////////////// 
 
 Double_t distThetaLL(Double_t costheta, Double_t costheta1){
 
@@ -126,11 +135,21 @@ Double_t distThetaLL(Double_t costheta, Double_t costheta1){
   return distThetaLL_;
 }
 
+
+/////////////////////////////////////                                                                                                                                                                                                                                         
+//             |A--|^2             //                                                                                                                                                                                                                                         
+///////////////////////////////////// 
+
 Double_t distThetaRR(Double_t costheta, Double_t costheta1){
 
   Double_t distThetaRR_ = 4.0*(cR*cR*cR*cR*(1.0 - costheta)*(1.0 - costheta)*(1.0 - costheta1)*(1.0 - costheta1) + cL*cL*cR*cR*((1.0 + costheta)*(1.0 + costheta)*(1.0 - costheta1)*(1.0 - costheta1) + (1.0 - costheta)*(1.0 - costheta)*(1.0 + costheta1)*(1.0 + costheta1)) + cL*cL*cL*cL*(1.0 + costheta)*(1.0 + costheta)*(1.0 + costheta1)*(1.0 + costheta1));
   return distThetaRR_;
 }
+
+
+/////////////////////////////////////                                                                                                                                                                                                                                         
+//            2Re(ALL++)           //                                                                                                                                                                                                                                         
+///////////////////////////////////// 
 
 Double_t distTheta0L(Double_t costheta, Double_t costheta1, Double_t cosphi){
 
@@ -142,6 +161,11 @@ Double_t distTheta0L(Double_t costheta, Double_t costheta1, Double_t cosphi){
   return disTheta0L_;
 }
 
+
+/////////////////////////////////////                                                                                                                                                                                                                                         
+//            2Re(ALL--)           //                                                                                                                                                                                                                                         
+///////////////////////////////////// 
+
 Double_t distTheta0R(Double_t costheta, Double_t costheta1, Double_t cosphi){
 
   Double_t sintheta = TMath::Sqrt(1.0-costheta*costheta);
@@ -151,6 +175,11 @@ Double_t distTheta0R(Double_t costheta, Double_t costheta1, Double_t cosphi){
 
   return disTheta0R_;
 }
+
+
+/////////////////////////////////////                                                                                                                                                                                                                                         
+//            2Re(A++--)           //                                                                                                                                                                                                                                         
+///////////////////////////////////// 
 
 Double_t distThetaLR(Double_t costheta, Double_t costheta1, Double_t cosphi){
 
@@ -380,26 +409,6 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   TLorentzVector L21 = vector_num;
   TLorentzVector L22 = vector_lm;
 
-  /**
-  // Leptons in the 4l frame (Higgs)
-  TLorentzVector L114l = vector_lp;
-  TLorentzVector L124l = vector_nup;
-  TLorentzVector L214l = vector_num;
-  TLorentzVector L224l = vector_lm;
-
-  // Bosons in the 4l frame (Higgs)
-  TLorentzVector WP4l = WP;
-  TLorentzVector WM4l = WM;
-  
-  L114l.Boost(-H.BoostVector());
-  L124l.Boost(-H.BoostVector());
-  L214l.Boost(-H.BoostVector());
-  L224l.Boost(-H.BoostVector());
-
-  WP4l.Boost(-H.BoostVector());
-  WM4l.Boost(-H.BoostVector());
-  **/
-
   TLorentzVector L114l = boostinv(L11, H);
   TLorentzVector L124l = boostinv(L12, H);
   TLorentzVector L214l = boostinv(L21, H);
@@ -410,16 +419,6 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
 
 
   // Leptons in the V(W/Z) frame                                                                                                                                                                                                             
-  /**
-  TLorentzVector L11V = L114l;
-  TLorentzVector L12V = L124l;
-  TLorentzVector L21V = L214l;
-  TLorentzVector L22V = L224l;
-
-  L11V.Boost(-WP4l.BoostVector());
-  L21V.Boost(-WM4l.BoostVector());
-  **/
-
   TLorentzVector L11V = boostinv(L114l, WP4l);
   TLorentzVector L21V = boostinv(L214l, WM4l);
 
@@ -441,39 +440,9 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   TVector3 p3l21 = L214l.Vect();
 
   // Rotation
-  //TVector3 p3l11R = p3l11;
-  //TVector3 p3l21R = p3l21;
-
-  //p3l11R.RotateUz(p3wp);
-  //p3l21R.RotateUz(p3wp);
-
   TVector3 p3l11R = rotinv(p3l11, p3wp);
   TVector3 p3l21R = rotinv(p3l21, p3wp);
   
-  /**
-  Double_t qmodt = p3wp.X()*p3wp.X() + p3wp.Y()*p3wp.Y();
-  Double_t qmod = qmodt + p3wp.Z()*p3wp.Z();
-  qmodt = TMath::Sqrt(qmodt);
-  qmod = TMath::Sqrt(qmod);
-
-  Double_t cth = p3wp.Z()/qmod;
-  Double_t sth = 1.0 - cth*cth;
-
-  if (sth==0.0 || qmodt==0.0){
-    p3l11 = L114l.Vect();
-    p3l21 = L214l.Vect();
-  }else{
-
-    sth = TMath::Sqrt(sth);
-    Double_t cfi = p3wp.X()/qmodt;
-    Double_t sfi = p3wp.Y()/qmodt;
-
-    p3l11R.SetXYZ(cth*cfi*p3l11.X()+cth*sfi*p3l11.Y()-sth*p3l11.Z(), -sfi*p3l11.X()+cfi*p3l11.Y(), sth*cfi*p3l11.X()+sth*sfi*p3l11.Y()+cth*p3l11.Z());
-    p3l21R.SetXYZ(cth*cfi*p3l21.X()+cth*sfi*p3l21.Y()-sth*p3l21.Z(), -sfi*p3l21.X()+cfi*p3l21.Y(), sth*cfi*p3l21.X()+sth*sfi*p3l21.Y()+cth*p3l21.Z());
-  }
-  **/
-
-
   Double_t pt11 = TMath::Sqrt(p3l11R.X()*p3l11R.X() + p3l11R.Y()*p3l11R.Y());
   Double_t pt21 = TMath::Sqrt(p3l21R.X()*p3l21R.X() + p3l21R.Y()*p3l21R.Y());
   
@@ -481,109 +450,8 @@ DoHiggsPolarizationWeight::evaluate(unsigned)
   Double_t cosphi = (p3l11R.X()*p3l21R.X() + p3l11R.Y()*p3l21R.Y()) / (pt11*pt21);
   Double_t dphill = TMath::ACos(cosphi);
   
-
-  /**
   // https://arxiv.org/pdf/2105.07972.pdf
-  
-  /////////////////////////////////////
-  //             |ALL|^2             //
-  /////////////////////////////////////
-
-  
-  Double_t K = ((H.M()*H.M() - WP.M()*WP.M() - WM.M()*WM.M()) / (2 * WP.M() * WM.M()));
-
-
-  Double_t ALL2 = K*K * 16*(cR*cR*cR*cR + 2*(cL*cL)*(cR*cR) + cL*cL*cL*cL)*(1.0-costhetawp*costhetawp)*(1.0-costhetawm*costhetawm);
-
-  /////////////////////////////////////
-  //             |A++|^2             //
-  /////////////////////////////////////
-
-  // Z Decay
-  //Double_t plus1 = cL*cL*cL*cL * (1 + ROOT::Math::cos(theta_Wp_star))*(1 + ROOT::Math::cos(theta_Wp_star)) * (1 + ROOT::Math::cos(theta_Wm_star))*(1 + ROOT::Math::cos(theta_Wm_star));
-  //Double_t plus2 = cR*cR*cR*cR * (1 - ROOT::Math::cos(theta_Wp_star))*(1 - ROOT::Math::cos(theta_Wp_star)) * (1 - ROOT::Math::cos(theta_Wm_star))*(1 - ROOT::Math::cos(theta_Wm_star));
-  //Double_t plus3 = cR*cR*cL*cL * (1 + ROOT::Math::cos(theta_Wp_star))*(1 + ROOT::Math::cos(theta_Wp_star)) * (1 - ROOT::Math::cos(theta_Wm_star))*(1 - ROOT::Math::cos(theta_Wm_star));
-  //Double_t plus4 = cR*cR*cL*cL * (1 - ROOT::Math::cos(theta_Wp_star))*(1 - ROOT::Math::cos(theta_Wp_star)) * (1 + ROOT::Math::cos(theta_Wm_star))*(1 + ROOT::Math::cos(theta_Wm_star));
-  //
-  //Double_t App2 = P1 * P2 * (plus1 + plus2 + plus3 + plus4);
-  
-  // W Decay
-  Double_t plus1 = 4*cR*cR*cR*cR * (1 + costhetawp) * (1 + costhetawp) * (1 + costhetawm) * (1 + costhetawm);
-  Double_t plus2 = 4*cL*cL*cL*cL * (1 - costhetawp) * (1 - costhetawp) * (1 - costhetawm) * (1 - costhetawm);
-  Double_t plus3 = 4*cL*cL*cR*cR * (1 + costhetawp) * (1 + costhetawp) * (1 - costhetawm) * (1 - costhetawm);
-  Double_t plus4 = 4*cR*cR*cL*cL * (1 - costhetawp) * (1 - costhetawp) * (1 + costhetawm) * (1 + costhetawm);
-
-  Double_t App2 = plus1 + plus2 + plus3 + plus4;
-
-
-  /////////////////////////////////////
-  //             |A--|^2             //
-  /////////////////////////////////////
-  
-
-  // Z Decay
-  //Double_t minus1 = cL*cL*cL*cL * (1 - ROOT::Math::cos(theta_Wp_star))*(1 - ROOT::Math::cos(theta_Wp_star)) * (1 - ROOT::Math::cos(theta_Wm_star))*(1 - ROOT::Math::cos(theta_Wm_star));
-  //Double_t minus2 = cR*cR*cR*cR * (1 + ROOT::Math::cos(theta_Wp_star))*(1 + ROOT::Math::cos(theta_Wp_star)) * (1 + ROOT::Math::cos(theta_Wm_star))*(1 + ROOT::Math::cos(theta_Wm_star));
-  //Double_t minus3 = cR*cR*cL*cL * (1 + ROOT::Math::cos(theta_Wp_star))*(1 + ROOT::Math::cos(theta_Wp_star)) * (1 - ROOT::Math::cos(theta_Wm_star))*(1 - ROOT::Math::cos(theta_Wm_star));
-  //Double_t minus4 = cR*cR*cL*cL * (1 - ROOT::Math::cos(theta_Wp_star))*(1 - ROOT::Math::cos(theta_Wp_star)) * (1 + ROOT::Math::cos(theta_Wm_star))*(1 + ROOT::Math::cos(theta_Wm_star));
-  
-  //Double_t Amm2 = P1 * P2 * (minus1 + minus2 + minus3 + minus4);
-
-  // W Decay
-  Double_t minus1 = 4*cR*cR*cR*cR * (1 - costhetawp) * (1 - costhetawp) * (1 - costhetawm) * (1 - costhetawm);
-  Double_t minus2 = 4*cL*cL*cL*cL * (1 + costhetawp) * (1 + costhetawp) * (1 + costhetawm) * (1 + costhetawm);
-  Double_t minus3 = 4*cL*cL*cR*cR * (1 - costhetawp) * (1 - costhetawp) * (1 + costhetawm) * (1 + costhetawm);
-  Double_t minus4 = 4*cR*cR*cL*cL * (1 + costhetawp) * (1 + costhetawp) * (1 - costhetawm) * (1 - costhetawm);
-
-  Double_t Amm2 = minus1+ minus2+ minus3+ minus4;
-  
-
-  /////////////////////////////////////
-  //            2Re(ALL++)           //
-  /////////////////////////////////////
-
-  Double_t sinthetawp = TMath::Sqrt(1.0-costhetawp*costhetawp);
-  Double_t sinthetawm = TMath::Sqrt(1.0-costhetawm*costhetawm);
-
-
-  Double_t LLpp1 = cL*cL*cL*cL * (1 - costhetawp) * (1 - costhetawm);
-  Double_t LLpp2 = cR*cR*cR*cR * (1 + costhetawp) * (1 + costhetawm);
-  Double_t LLpp3 = cL*cL*cR*cR * (1 + costhetawp) * (1 - costhetawm);
-  Double_t LLpp4 = cR*cR*cL*cL * (1 - costhetawp) * (1 + costhetawm);
-
-  Double_t ReALLpp = -16.0 * K * (LLpp1+LLpp2+LLpp3+LLpp4) * sinthetawp * sinthetawm * cosphi;
-
-
-  /////////////////////////////////////
-  //            2Re(ALL--)           //
-  /////////////////////////////////////
-
-  Double_t LLmm1 = cL*cL*cL*cL * (1 + costhetawp) * (1 + costhetawm);
-  Double_t LLmm2 = cR*cR*cR*cR * (1 - costhetawp) * (1 - costhetawm);
-  Double_t LLmm3 = cL*cL*cR*cR * (1 - costhetawp) * (1 + costhetawm);
-  Double_t LLmm4 = cR*cR*cL*cL * (1 + costhetawp) * (1 - costhetawm);
-
-  Double_t ReALLmm = -16.0 * K * (LLmm1+LLmm2+LLmm3+LLmm4) * sinthetawp * sinthetawm * cosphi;
-
-
-  /////////////////////////////////////
-  //            2Re(A++--)           //
-  /////////////////////////////////////
-
-  Double_t cos2phi = 2.0*cosphi*cosphi - 1.0;
-
-  Double_t ReAppmm = 8.0 * ((cL*cL + cR*cR)*(cL*cL + cR*cR)) * sinthetawp*sinthetawp * sinthetawm*sinthetawm * cos2phi;
-  
-  
-  /////////////////////////////////////
-  //             |ATT|^2             //
-  /////////////////////////////////////
-  
-  Double_t ATT2 = App2 + Amm2 + ReAppmm;
-  **/
-
-
-
+ 
   Double_t Q1 = H.E()*H.E() - H.X()*H.X() - H.Y()*H.Y() - H.Z()*H.Z();
   Double_t Q2 = WP.E()*WP.E() - WP.X()*WP.X() - WP.Y()*WP.Y() - WP.Z()*WP.Z();
   Double_t Q3 = WM.E()*WM.E() - WM.X()*WM.X() - WM.Y()*WM.Y() - WM.Z()*WM.Z();
