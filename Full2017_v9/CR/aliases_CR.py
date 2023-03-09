@@ -24,6 +24,11 @@ aliases['LepWPCut'] = {
     'samples': mc + ['DATA']
 }
 
+aliases['LepWPSF'] = {
+    'expr': 'LepSF2l__ele_'+eleWP+'__mu_'+muWP,
+    'samples': mc
+}
+
 aliases['gstarLow'] = {
     'expr': 'Gen_ZGstar_mass > 0 && Gen_ZGstar_mass < 4',
     'samples': 'WgS'
@@ -80,11 +85,6 @@ aliases['PromptGenLepMatch2l'] = {
 }
 
 
-#aliases['Top_pTrw'] = {
-#    'expr': '(topGenPt * antitopGenPt > 0.) * (TMath::Sqrt(TMath::Exp(0.0615 - 0.0005 * topGenPt) * TMath::Exp(0.0615 - 0.0005 * antitopGenPt))) + (topGenPt * antitopGenPt <= 0.)',
-#    'samples': ['top']
-#}
-
 aliases['Top_pTrw'] = {
     'expr': '(topGenPt * antitopGenPt > 0.) * (TMath::Sqrt((0.103*TMath::Exp(-0.0118*topGenPt) - 0.000134*topGenPt + 0.973) * (0.103*TMath::Exp(-0.0118*antitopGenPt) - 0.000134*antitopGenPt + 0.973))) + (topGenPt * antitopGenPt <= 0.)',
     'samples': ['top']
@@ -107,11 +107,11 @@ handle = open('%s/src/PlotsConfigurations/Configurations/patches/DYrew30.py' % o
 exec(handle)
 handle.close()
 aliases['DY_NLO_pTllrw'] = {
-    'expr': '('+DYrew['2018']['NLO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
+    'expr': '('+DYrew['2017']['NLO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
     'samples': ['DY', 'DY-LL', 'DY-emu']
 }
 aliases['DY_LO_pTllrw'] = {
-    'expr': '('+DYrew['2018']['LO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
+    'expr': '('+DYrew['2017']['LO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
     'samples': ['DY', 'DY-LL', 'DY-emu']
 }
 
@@ -136,24 +136,21 @@ aliases['multiJet'] = {
 ####################################################################################
 
 # DeepB = DeepCSV
-bWP_loose_deepB  = '0.1208'
-bWP_medium_deepB = '0.4168' 
-bWP_tight_deepB  = '0.7665'
+bWP_loose_deepB  = '0.1355'
+bWP_medium_deepB = '0.4506' 
+bWP_tight_deepB  = '0.7738'
 
 # DeepFlavB = DeepJet
-bWP_loose_deepFlavB  = '0.0490'
-bWP_medium_deepFlavB = '0.2783'
-bWP_tight_deepFlavB  = '0.7100'
-
+bWP_loose_deepFlavB  = '0.0532'
+bWP_medium_deepFlavB = '0.3040'
+bWP_tight_deepFlavB  = '0.7476'
 
 # Actual algo and WP definition. BE CONSISTENT!!
 bAlgo = 'DeepFlavB' # ['DeepB','DeepFlavB']
 bWP   = bWP_loose_deepFlavB
-bSF   = 'deepjet' # ['deepcsv','deepjet']  ## deepflav is new b-tag SF
+bSF   = 'deepflav' # ['deepcsv','deepjet']  ## deepflav is new b-tag SF
 
-
-'''
-btagSFSource = '%s/src/PhysicsTools/NanoAODTools/data/btagSF/DeepJet_UL2018v3.csv' % os.getenv('CMSSW_BASE')
+btagSFSource = '%s/src/PhysicsTools/NanoAODTools/data/btagSF/DeepJet_UL2017v2.csv' % os.getenv('CMSSW_BASE')
 
 aliases['Jet_btagSF_deepflav_shape'] = {
     'linesToAdd': [
@@ -166,18 +163,16 @@ aliases['Jet_btagSF_deepflav_shape'] = {
     'args': (btagSFSource,'central','deepjet'),
     'samples': mc
 }
-'''
+
 
 # b veto
 aliases['bVeto'] = {
     'expr': 'Sum$(CleanJet_pt > 20. && abs(CleanJet_eta) < 2.5 && Jet_btag{}[CleanJet_jetIdx] > {}) == 0'.format(bAlgo, bWP)
-    #'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btag{}[CleanJet_jetIdx] > {}) == 0'.format(bAlgo, bWP)
 }
 
 
 aliases['bVetoSF'] = {
     'expr': 'TMath::Exp(Sum$(TMath::Log((CleanJet_pt>20 && abs(CleanJet_eta)<2.5)*Jet_btagSF_{}_shape[CleanJet_jetIdx]+1*(CleanJet_pt<20 || abs(CleanJet_eta)>2.5))))'.format(bSF),
-    #'expr': 'TMath::Exp(Sum$(TMath::Log((CleanJet_pt>30 && abs(CleanJet_eta)<2.5)*Jet_btagSF_{}_shape[CleanJet_jetIdx]+1*(CleanJet_pt<30 || abs(CleanJet_eta)>2.5))))'.format(bSF),
     'samples': mc
 }
 
@@ -185,25 +180,21 @@ aliases['bVetoSF'] = {
 # At least one b-tagged jet
 aliases['bReq'] = {
     'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btag{}[CleanJet_jetIdx] > {}) >= 1'.format(bAlgo, bWP)
-    #'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btag{}[CleanJet_jetIdx] > {}) >= 1'.format(bAlgo, bWP)
 }
 
 
 aliases['bReqSF'] = {
     'expr': 'TMath::Exp(Sum$(TMath::Log((CleanJet_pt>30 && abs(CleanJet_eta)<2.5)*Jet_btagSF_{}_shape[CleanJet_jetIdx]+1*(CleanJet_pt<30 || abs(CleanJet_eta)>2.5))))'.format(bSF),
-    #'expr': 'TMath::Exp(Sum$(TMath::Log((CleanJet_pt>30 && abs(CleanJet_eta)<2.5)*Jet_btagSF_{}_shape[CleanJet_jetIdx]+1*(CleanJet_pt<30 || abs(CleanJet_eta)>2.5))))'.format(bSF),
     'samples': mc
 }
 
 # Leading jet is b-tagged
 aliases['bLead'] = {
     'expr': 'Alt$(CleanJet_pt[0],0) > 30. && abs(Alt$(CleanJet_eta[0],0)) < 2.5 && Alt$(Jet_btag{}[CleanJet_jetIdx[0]],0) > {}'.format(bAlgo, bWP)
-    #'expr': 'Alt$(CleanJet_pt[0],0) > 30. && abs(Alt$(CleanJet_eta[0],0)) < 2.5 && Alt$(Jet_btag{}[CleanJet_jetIdx[0]],0) > {}'.format(bAlgo, bWP)
 }
 
 aliases['bLeadSF'] = {
     'expr': 'TMath::Exp(Sum$(TMath::Log((CleanJet_pt>30 && abs(CleanJet_eta)<2.5)*Jet_btagSF_{}_shape[CleanJet_jetIdx]+1*(CleanJet_pt<30 || abs(CleanJet_eta)>2.5))))'.format(bSF), # same as bReqSF --> is it correct? Do we need this SF?
-    #'expr': 'TMath::Exp(Sum$(TMath::Log((CleanJet_pt>30 && abs(CleanJet_eta)<2.5)*Jet_btagSF_{}_shape[CleanJet_jetIdx]+1*(CleanJet_pt<30 || abs(CleanJet_eta)>2.5))))'.format(bSF),
     'samples': mc
 }
 
@@ -220,7 +211,7 @@ aliases['btagSF'] = {
     'samples': mc
 }
 
-'''
+
 for shift in ['jes', 'lf', 'lfstats1', 'lfstats2', 'hfstats1', 'hfstats2', 'cferr1', 'cferr2']:
     aliases['Jet_btagSF_deepflav_shape_up_%s' % shift] = {
         'class': 'BtagSF',
@@ -232,27 +223,25 @@ for shift in ['jes', 'lf', 'lfstats1', 'lfstats2', 'hfstats1', 'hfstats2', 'cfer
         'args': (btagSFSource, 'down_' + shift,'deepjet'),
         'samples': mc
     }
-    
+
     for targ in ['bVeto', 'bReq']:
         alias = aliases['%sSF%sup' % (targ, shift)] = copy.deepcopy(aliases['%sSF' % targ])
         alias['expr'] = alias['expr'].replace('btagSF_deepflav_shape', 'btagSF_deepflav_shape_up_%s' % shift)
-        
+
         alias = aliases['%sSF%sdown' % (targ, shift)] = copy.deepcopy(aliases['%sSF' % targ])
         alias['expr'] = alias['expr'].replace('btagSF_deepflav_shape', 'btagSF_deepflav_shape_down_%s' % shift)
-        
+
     aliases['btagSF%sup' % shift] = {
         'expr': aliases['btagSF']['expr'].replace('SF', 'SF' + shift + 'up'),
         'samples': mc
     }
-    
+
     aliases['btagSF%sdown' % shift] = {
         'expr': aliases['btagSF']['expr'].replace('SF', 'SF' + shift + 'down'),
         'samples': mc
     }
 
 '''
-
-
 for shift in ['jes', 'lf', 'hf', 'lfstats1', 'lfstats2', 'hfstats1', 'hfstats2', 'cferr1', 'cferr2']:
     for targ in ['bVeto', 'bReq']:
         alias = aliases['%sSF%sup' % (targ, shift)] = copy.deepcopy(aliases['%sSF' % targ])
@@ -270,7 +259,7 @@ for shift in ['jes', 'lf', 'hf', 'lfstats1', 'lfstats2', 'hfstats1', 'hfstats2',
         'expr': aliases['btagSF']['expr'].replace('SF', 'SF' + shift + 'down'),
         'samples': mc
     }
-
+'''
 
 
 ####################################################################################
@@ -293,13 +282,13 @@ aliases['Jet_PUIDSF_down'] = {
   'samples': mc
 }
 
-# data/MC scale factors
+#Lepton_rochesterSF
+
 aliases['SFweight'] = {
-    'expr': ' * '.join(['SFweight2l','LepWPCut', 'LepSF2l__ele_' + eleWP + '__mu_' + muWP, 'btagSF', 'Jet_PUIDSF', 'L1PreFiringWeight_Nom', 'Lepton_rochesterSF']),
-    #'expr': ' * '.join(['SFweight2l','LepWPCut', 'LepSF2l__ele_' + eleWP + '__mu_' + muWP, 'Jet_PUIDSF']),
+    #'expr': ' * '.join(['SFweight2l', 'LepWPCut', 'LepWPSF','PrefireWeight','Jet_PUIDSF_loose', 'btagSF', 'L1PreFiringWeight_Nom']),
+    'expr': ' * '.join(['SFweight2l', 'LepWPCut', 'LepWPSF','Jet_PUIDSF', 'btagSF', 'L1PreFiringWeight_Nom', 'Lepton_rochesterSF']),
     'samples': mc
 }
-
 
 # variations
 aliases['SFweightEleUp'] = {

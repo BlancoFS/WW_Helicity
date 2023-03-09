@@ -29,17 +29,18 @@ except NameError:
 ################# SKIMS ########################
 ################################################
 
-mcProduction = 'Summer20UL18_106x_nAODv9_Full2018v9'
+mcProduction = 'Summer20UL16_106x_nAODv9_HIPM_Full2016v9'
 
-dataReco = 'Run2018_UL2018_nAODv9_Full2018v9'
+dataReco = 'Run2016_UL2016_nAODv9_HIPM_Full2016v9'
 
 fakeReco = dataReco
 
-mcSteps = 'MCl1loose2018v9__MCCorr2018v9NoJERInHorn__l2tightOR2018v9__btagULFix'
+mcSteps = 'MCl1loose2016v9__MCCorr2016v9NoJERInHorn__l2tightOR2016v9'
+#mcSteps = 'MCl1loose2017v9__MCCorr2017v9__l2tightOR2017v9'
 
-fakeSteps = 'DATAl1loose2018v9__l2loose__fakeW'
+fakeSteps = 'DATAl1loose2016v9__l2loose__fakeW'
 
-dataSteps = 'DATAl1loose2018v9__l2loose__l2tightOR2018v9'
+dataSteps = 'DATAl1loose2016v9__l2loose__l2tightOR2016v9'
 
 ##############################################
 ###### Tree base directory for the site ######
@@ -66,28 +67,31 @@ dataDirectory = os.path.join(treeBaseDir, dataReco, dataSteps)
 ################################################
 
 DataRun = [
-            ['A','Run2018A-UL2018-v1'] ,
-            ['B','Run2018B-UL2018-v1'] ,
-            ['C','Run2018C-UL2018-v1'] ,
-            ['D','Run2018D-UL2018-v1'] ,
-          ]
+    ['B','Run2016B-ver1_HIPM_UL2016-v2'],
+    ['B','Run2016B-ver2_HIPM_UL2016-v2'],
+    ['C','Run2016C-HIPM_UL2016-v2'],
+    ['D','Run2016D-HIPM_UL2016-v2'],
+    ['E','Run2016E-HIPM_UL2016-v2'],
+    ['F','Run2016F-HIPM_UL2016-v2'],
+]
 
-DataSets = ['MuonEG','DoubleMuon','SingleMuon','EGamma']
+DataSets = ['MuonEG','SingleMuon','SingleElectron','DoubleMuon', 'DoubleEG']
 
 DataTrig = {
-            'MuonEG'         : 'Trigger_ElMu' ,
-            'DoubleMuon'     : '!Trigger_ElMu && Trigger_dblMu' ,
-            'SingleMuon'     : '!Trigger_ElMu && !Trigger_dblMu && Trigger_sngMu' ,
-            'EGamma'         : '!Trigger_ElMu && !Trigger_dblMu && !Trigger_sngMu && (Trigger_sngEl || Trigger_dblEl)' ,
-           }
+    'MuonEG'         : ' Trigger_ElMu' ,
+    'SingleMuon'     : '!Trigger_ElMu && Trigger_sngMu' ,
+    'SingleElectron' : '!Trigger_ElMu && !Trigger_sngMu && Trigger_sngEl',
+    'DoubleMuon'     : '!Trigger_ElMu && !Trigger_sngMu && !Trigger_sngEl && Trigger_dblMu',
+    'DoubleEG'       : '!Trigger_ElMu && !Trigger_sngMu && !Trigger_sngEl && !Trigger_dblMu && Trigger_dblEl'
+}
 
 
 #########################################
 ############ MC COMMON ##################
 #########################################
 
-mcCommonWeightNoMatch = 'XSWeight*SFweight*METFilter_MC'
-mcCommonWeight = 'XSWeight*SFweight*PromptGenLepMatch2l*METFilter_MC'
+mcCommonWeightNoMatch = 'XSWeight*METFilter_MC*SFweight'
+mcCommonWeight = 'XSWeight*METFilter_MC*PromptGenLepMatch2l*SFweight'
 
 ###########################################
 #############  BACKGROUNDS  ###############
@@ -101,11 +105,11 @@ useDYtt = True
 files=[]
 if useDYtt:
   files = nanoGetSampleFiles(mcDirectory, 'DYJetsToTT_MuEle_M-50') + \
-          nanoGetSampleFiles(mcDirectory, 'DYJetsToLL_M-10to50-LO')
+          nanoGetSampleFiles(mcDirectory, 'DYJetsToLL_M-10to50')
 
 else:
   files = nanoGetSampleFiles(mcDirectory, 'DYJetsToLL_M-50') + \
-          nanoGetSampleFiles(mcDirectory, 'DYJetsToLL_M-10to50-LO')
+          nanoGetSampleFiles(mcDirectory, 'DYJetsToLL_M-10to50')
 
 
 samples['DY'] = {
@@ -148,7 +152,7 @@ samples['WW'] = {
 }
 
 samples['WWewk'] = {
-    'name': nanoGetSampleFiles(mcDirectory, 'WpWmJJ_EWK_QCD_noTop'),
+    'name': nanoGetSampleFiles(mcDirectory, 'WpWmJJ_EWK_noTop'),
     'weight': mcCommonWeight + '*(Sum$(abs(GenPart_pdgId)==6 || GenPart_pdgId==25)==0)', #filter tops and Higgs
     'FilesPerJob': 2
 }
@@ -378,7 +382,7 @@ samples['ZH_hww'] = {
 signals.append('ZH_hww')
 
 samples['ggZH_hww'] = {
-    'name':   nanoGetSampleFiles(mcDirectory, 'GluGluZH_HToWWTo2L2Nu_M125'),
+    'name':   nanoGetSampleFiles(mcDirectory, 'ggZH_HToWW_M125'),
     'weight': mcCommonWeight,
     'FilesPerJob': 2
 }
@@ -408,7 +412,7 @@ signals.append('ttH_hww')
 ############ H->TauTau ############
 
 samples['ggH_htt'] = {
-    'name': nanoGetSampleFiles(mcDirectory, 'GluGluHToTauTau_M125_Powheg'),
+    'name': nanoGetSampleFiles(mcDirectory, 'GluGluHToTauTau_M125'),
     'weight': mcCommonWeight,
     'FilesPerJob': 10
 }
@@ -442,32 +446,29 @@ samples['WH_htt'] = {
 signals.append('WH_htt')
 
 
-###########################################
-################## FAKE ###################
-###########################################
+# ###########################################
+# ################## FAKE ###################
+# ###########################################
 
 samples['Fake'] = {
   'name': [],
   'weight': 'METFilter_DATA*fakeW',
   'weights': [],
   'isData': ['all'],
-  'FilesPerJob': 25
+  'FilesPerJob': 100,
+  'suppressNegativeNuisances' : ['all']
 }
 
 for _, sd in DataRun:
   for pd in DataSets:
+
     tag = pd + '_' + sd
 
-    if (   ('DoubleMuon' in pd and 'Run2018B' in sd)
-        or ('DoubleMuon' in pd and 'Run2018D' in sd)
-        or ('DoubleMuon' in pd and 'Run2018D' in sd) 
-        or ('SingleMuon' in pd and 'Run2018A' in sd)
-        or ('SingleMuon' in pd and 'Run2018B' in sd)
-        or ('SingleMuon' in pd and 'Run2018C' in sd)):
+    if 'DoubleEG' in pd and 'Run2016B-ver2' in sd:  # Run2016B-ver2_HIPM_UL2016-v2
         print("sd      = {}".format(sd))
         print("pd      = {}".format(pd))
         print("Old tag = {}".format(tag))
-        tag = tag.replace('v1','v2')
+        tag = tag.replace('v2','v3')
         print("New tag = {}".format(tag))
 
     files = nanoGetSampleFiles(fakeDirectory, tag)
@@ -475,37 +476,35 @@ for _, sd in DataRun:
     samples['Fake']['name'].extend(files)
     samples['Fake']['weights'].extend([DataTrig[pd]] * len(files))
 
+samples['Fake']['subsamples'] = {
+  'em': 'abs(Lepton_pdgId[0]) == 11',
+  'me': 'abs(Lepton_pdgId[0]) == 13'
+}
+
 ###########################################
 ################## DATA ###################
 ###########################################
 
 samples['DATA'] = {
   'name': [],
-  'weight': 'LepWPCut*METFilter_DATA',
+  'weight': 'METFilter_DATA*LepWPCut',
   'weights': [],
   'isData': ['all'],
-  'FilesPerJob': 25
+  'FilesPerJob': 100
 }
 
 for _, sd in DataRun:
   for pd in DataSets:
     tag = pd + '_' + sd
 
-    if (   ('DoubleMuon' in pd and 'Run2018B' in sd)
-        or ('DoubleMuon' in pd and 'Run2018D' in sd)
-        or ('DoubleMuon' in pd and 'Run2018D' in sd)
-        or ('SingleMuon' in pd and 'Run2018A' in sd)
-        or ('SingleMuon' in pd and 'Run2018B' in sd)
-        or ('SingleMuon' in pd and 'Run2018C' in sd)):
+    if 'DoubleEG' in pd and 'Run2016B-ver2' in sd:  # Run2016B-ver2_HIPM_UL2016-v2
         print("sd      = {}".format(sd))
         print("pd      = {}".format(pd))
         print("Old tag = {}".format(tag))
-        tag = tag.replace('v1','v2')
+        tag = tag.replace('v2','v3')
         print("New tag = {}".format(tag))
 
     files = nanoGetSampleFiles(dataDirectory, tag)
 
     samples['DATA']['name'].extend(files)
     samples['DATA']['weights'].extend([DataTrig[pd]] * len(files))
-
-
