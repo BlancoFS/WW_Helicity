@@ -131,7 +131,7 @@ aliases['multiJet'] = {
 }
 
 ####################################################################################
-# b tagging WPs: https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL18
+# b tagging WPs: https://twiki.cern.ch/twiki/bin/view/CMS/BtagRecommendation106XUL16_preVFP
 ####################################################################################
 
 # DeepB = DeepCSV
@@ -284,7 +284,6 @@ aliases['Jet_PUIDSF_down'] = {
 
 
 aliases['SFweight'] = {
-    #'expr': ' * '.join(['SFweight2l', 'LepWPCut', 'LepWPSF','PrefireWeight','Jet_PUIDSF_loose', 'btagSF']),
     'expr': ' * '.join(['SFweight2l', 'LepWPCut', 'LepWPSF','Jet_PUIDSF', 'btagSF', 'L1PreFiringWeight_Nom', 'Lepton_rochesterSF']),
     'samples': mc
 }
