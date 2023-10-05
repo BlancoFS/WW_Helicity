@@ -28,6 +28,12 @@ or
 text2workspace.py datacard_combined.txt -m 125 -P HiggsAnalysis.CombinedLimit.HiggsHelicity:higgshelicity --PO doIntXsec -o datacard_combined.root
 ```
 
+For large combinations, useful:
+
+```
+ulimit -Ss 131072
+```
+
 Fit:
 
 ```
