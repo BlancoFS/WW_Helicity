@@ -46,6 +46,10 @@ combineTool.py -M Impacts -d datacards/datacard_combined.root -m 125 -t -1 --X-r
 plotImpacts.py -i impacts.json -o impacts --POI FLL_Fit
 
 plotImpacts.py -i impacts.json -o impacts --POI FTT_Fit
+
+combine -M MultiDimFit --algo grid --points 1000 --setParameters r_LL=1,r_TT=1 --redefineSignalPOIs r_LL,r_TT --setParameterRanges r_LL=0,4:r_TT=0,4 -t -1 --X-rtd MINIMIZER_analytic --cminDefaultMinimizerStrategy=0 --verbose 1 -d datacards_HWW_2018/datacard_combined_RF_WW.root -m 125
+
+root higgsCombineTest.MultiDimFit.mH125.root higgsCombineTest.MultiDimFit.mH125.root draw2D.cxx\(\"r_LL\",\"r_TT\",\"r_LL\",\"r_TT\"\)
 ```
 
 
